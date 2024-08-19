@@ -340,10 +340,16 @@ function skillview(){
 function projectview(){
     let project="";
     for(let each in ls_data[indexParam].projects){
-        project=project+`<div class="h4 mt-3 mx-4"><p>${ls_data[indexParam].projects[each].title}</p></div>
-                         <div class="mx-4"><p>${ls_data[indexParam].projects[each].role}</p></div>
-                         <div class=" mx-4"><p >${ls_data[indexParam].projects[each].date}</p></div>
-                         <div class=" mx-4 border-bottom border-dark"><p>${ls_data[indexParam].projects[each].description}</p></div>`
+        project=project+`<div class="row">
+                            <div class="col-10 ">
+                                <div class="h4 mt-3 mx-4"><p>${ls_data[indexParam].projects[each].title}</p></div>
+                                <div class="mx-4"><p>${ls_data[indexParam].projects[each].role}</p></div>
+                                <div class=" mx-4"><p>${ls_data[indexParam].projects[each].description}</p></div>
+                            </div>
+                            <div class="col-2">
+                                <div class=" mx-4 mt-3"><p >${ls_data[indexParam].projects[each].date}</p></div>
+                            </div>
+                        </div>`
     }
     document.getElementById("projectview").innerHTML=project;  
 }
