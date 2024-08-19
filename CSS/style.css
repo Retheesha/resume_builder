@@ -1,0 +1,32 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.register{
+    width: 500px;
+    margin: 0 auto;
+}
+.reg-body{
+    background: rgb(4,199,250);
+background: linear-gradient(184deg, rgba(4,199,250,1) 0%, rgba(138,31,167,1) 51%);
+ }
+.colorregister{
+    background-color: rgba(12,12,96,1);
+}
+/* .table.edu{
+    display: flex;
+    justify-content: center;
+} */
+h5{
+    width: 20%;
+}
+.view_body{
+    font-family: cursive;
+}
+.resume_body{
+    background-color: rgb(195, 26, 241);
+    font-family: cursive;
+}
+.view_body button{
+    background-color: rgb(125, 6, 158);
+}
