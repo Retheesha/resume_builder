@@ -22,7 +22,7 @@ function register(){
             }
             user_details.push(user_list_obj)
             localStorage.setItem("users",JSON.stringify(user_details))
-            window.location.href='login.html'
+            window.location.href='index.html'
         }
         else{
             let reg_value=false
@@ -43,7 +43,7 @@ function register(){
                 user_details.push(user_list_obj)
                 localStorage.setItem("users",JSON.stringify(user_details))
                 alert("registration successfull")
-                window.location.href='login.html'
+                window.location.href='index.html'
             }    
         }     
     }      
@@ -80,7 +80,7 @@ function login(){
             window.location.href="register.html"
         }
         else{
-            window.location.href="login.html"
+            window.location.href="index.html"
         }
         }
 let resume={
