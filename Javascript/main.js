@@ -70,6 +70,8 @@ function login(){
     else if(loginvalue==false){
         alert("email and password is not valid")
     }
+    document.getElementById("log_email").value="";
+    document.getElementById("log_pass").value="";
 }
     function logout(){
         localStorage.setItem("login",)

@@ -18,8 +18,11 @@ font-family: cursive;
     display: flex;
     justify-content: center;
 } */
- .headcontainer{
+ .headcontainer_log{
     margin-left: 300px;
+ }
+ .headcontainer_reg{
+    margin-left: 380px;
  }
  .colortittle{
     color:rgb(255, 148, 8);
