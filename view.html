@@ -95,5 +95,9 @@
 <script src="Javascript/main.js"></script>
 <script>
     view()
+    let isLogged=localStorage.getItem("isLogged")
+    if(!isLogged){
+        window.location="index.html"
+    }
 </script>
 </html2

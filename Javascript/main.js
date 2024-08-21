@@ -63,6 +63,7 @@ function login(){
         }
     }
     if(loginvalue==true){
+        localStorage.setItem("isLogged","true")
         localStorage.setItem("adminid",log_email)
         alert("login sussessful")
         window.location.href="resume.html"
@@ -74,15 +75,9 @@ function login(){
     document.getElementById("log_pass").value="";
 }
     function logout(){
-        localStorage.setItem("login",)
-        let login=localStorage.getItem("login")
-        if(login=="sucessful"){
-            window.location.href="register.html"
-        }
-        else{
-            window.location.href="index.html"
-        }
-        }
+        localStorage.removeItem("isLogged")
+        window.location="index.html"
+    }
 let resume={
     
     personal_details:{
