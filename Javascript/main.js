@@ -356,13 +356,17 @@ function projectview(){
 function workview(){
     let work="";
     for(let each in ls_data[indexParam].work_experience){
-        work=work+`<tr>
-                        <td>${ls_data[indexParam].work_experience[each].job_title}</td>
-                        <td>${ls_data[indexParam].work_experience[each].company}</td>
-                        <td>${ls_data[indexParam].work_experience[each].learned_skill}</td>
-                        <td>${ls_data[indexParam].work_experience[each].location}</td>
-                        <td>${ls_data[indexParam].work_experience[each].year_of_experience}</td>
-                        </tr>`
+        work=work+` <div class="row">
+                    <div class="col-10">
+                        <div class="h4 mt-3 mx-4">${ls_data[indexParam].work_experience[each].company}</div>
+                        <div class="h5 mx-4 my-2">${ls_data[indexParam].work_experience[each].job_title}</div>
+                    </div>
+                    <div class="col-2">
+                        <div class="h5 mt-3">${ls_data[indexParam].work_experience[each].year_of_experience}</div>
+                    </div>
+                    </div>
+                    <div class="mx-4 my-2">${ls_data[indexParam].work_experience[each].learned_skill}</div>
+                </div>`
     }
     document.getElementById("workview").innerHTML=work;  
 }

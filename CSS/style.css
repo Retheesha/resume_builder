@@ -9,6 +9,7 @@
 .reg-body{
     background: rgb(4,199,250);
 background: linear-gradient(184deg, rgba(4,199,250,1) 0%, rgba(138,31,167,1) 51%);
+font-family: cursive;
  }
 .colorregister{
     background-color: rgba(12,12,96,1);
@@ -17,6 +18,13 @@ background: linear-gradient(184deg, rgba(4,199,250,1) 0%, rgba(138,31,167,1) 51%
     display: flex;
     justify-content: center;
 } */
+ .headcontainer{
+    margin-left: 300px;
+ }
+ .colortittle{
+    color:rgb(255, 148, 8);
+    text-shadow:2px 2px #fc0000;
+ }
 h5{
     width: 20%;
 }
@@ -29,4 +37,11 @@ h5{
 }
 .view_body button{
     background-color: rgb(125, 6, 158);
+}
+.summitbtn{
+    background-color:black;
+}
+.summitbtn:hover{
+    background-color: #15bdff;
+    color: white;
 }
