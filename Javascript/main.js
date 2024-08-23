@@ -22,7 +22,7 @@ async function registernew() {
     let reg_email = document.getElementById("reg_email").value;
     let reg_password = document.getElementById("reg_pass").value;
 
-    await addDoc(collection(db, "register_data"), {
+    await addDoc(collection(db, "register_data"),{
         email: reg_name,
         name: reg_email,
         password: reg_password
@@ -128,6 +128,7 @@ function generateresume(change, key, p_key) {
         resume[key] = change.value
     }
 }
+window.generateresume=generateresume;
 function addList(id, key, p_key) {
     let listEach = document.getElementById(id)
     if (p_key) {
@@ -140,6 +141,7 @@ function addList(id, key, p_key) {
     addskill(key, p_key)
 
 }
+window.addList=addList
 function addskill(keyname, p_keyname) {
     let add = "";
     if (p_keyname) {
@@ -167,6 +169,7 @@ function addskill(keyname, p_keyname) {
         document.getElementById("additem").innerHTML = add;
     }
 }
+window.addskill=addskill
 function adddelete(index, keychange, p_keychange) {
     let listskill = [];
     if (p_keychange) {
@@ -186,7 +189,7 @@ function adddelete(index, keychange, p_keychange) {
     }
     addskill(keychange, p_keychange)
 }
-
+window.adddelete=adddelete
 function listSave(key, id, firstParam, secondParam, thirdParam, fourthParam, fifthParam) {
     let first = document.getElementById(firstParam)
     let second = document.getElementById(secondParam)
@@ -216,7 +219,7 @@ function listSave(key, id, firstParam, secondParam, thirdParam, fourthParam, fif
     fourth.value = "";
     eduadd(key, id, firstParam, secondParam, thirdParam, fourthParam, fifthParam)
 }
-
+window.listSave=listSave
 function eduadd(keyvalue, idname, firstin, secondin, thirdin, fourthin, fifthin) {
     let edu = ""
     if (fifthin) {
@@ -271,6 +274,7 @@ function eduadd(keyvalue, idname, firstin, secondin, thirdin, fourthin, fifthin)
     document.getElementById(idname).innerHTML = edu;
 
 }
+window.eduadd=eduadd
 function deleteedu(index, edu, id, first, second, third, fourth, fifth) {
     console.log(resume)
     let eduList = [];
@@ -283,18 +287,18 @@ function deleteedu(index, edu, id, first, second, third, fourth, fifth) {
 
     eduadd(edu, id, first, second, third, fourth, fifth)
 }
-
-if (!localStorage.getItem("resume_list")) {
-    localStorage.setItem("resume_list", JSON.stringify([]))
-}
-let user_resume = JSON.parse(localStorage.getItem("resume_list"))
-function summit() {
-    user_resume.push(resume)
-    localStorage.setItem('resume_list', JSON.stringify(user_resume))
+window.deleteedu=deleteedu
+// if (!localStorage.getItem("resume_list")) {
+//     localStorage.setItem("resume_list", JSON.stringify([]))
+// }
+// let user_resume = JSON.parse(localStorage.getItem("resume_list"))
+async function summit() {
+    await addDoc(collection(db, "resume_list"),(resume))
+    // user_resume.push(resume)
     window.location.href = "list.html"
     display()
 }
-
+window.summit=summit
 let userlist_resume = JSON.parse(localStorage.getItem("resume_list"));
 function display() {
     let diplayadd = ""
