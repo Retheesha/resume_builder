@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { addDoc, collection, getFirestore } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
+import { addDoc, collection, getFirestore, getDocs, query } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -22,17 +22,20 @@ async function registernew() {
     let reg_email = document.getElementById("reg_email").value;
     let reg_password = document.getElementById("reg_pass").value;
 
-    await addDoc(collection(db, "register_data"),{
-        email: reg_name,
-        name: reg_email,
+    await addDoc(collection(db, "register_data"), {
+        email: reg_email,
+        name: reg_name,
         password: reg_password
     })
 }
 window.registernew = registernew
-// if(!localStorage.getItem("users")){
-//     localStorage.setItem("users",JSON.stringify([]))
-// }
-// let user_details=JSON.parse(localStorage.getItem("users"))
+let getRegisterData = []
+getDocs(query(collection(db, "register_data"))).then(doc => {
+    doc.forEach((e, i) => {
+        getRegisterData.push(e.data())
+    })
+})
+console.log(getRegisterData)
 // function register(){
 //     let reg_name=document.getElementById("reg_name").value;
 //     let reg_email=document.getElementById("reg_email").value;
@@ -83,19 +86,19 @@ window.registernew = registernew
 //     document.getElementById("reg_pass").value=""; 
 // }
 
-let admin = localStorage.getItem("adminid")
+// let admin = localStorage.getItem("adminid")
 function login() {
     let log_email = document.getElementById("log_email").value;
     let log_password = document.getElementById("log_pass").value;
     let loginvalue = false;
-    for (let each in user_details) {
-        if (log_email == user_details[each].email && log_password == user_details[each].password) {
+    for (let each in getRegisterData) {
+        if (log_email == getRegisterData[each].email && log_password == getRegisterData[each].password) {
             loginvalue = true;
         }
     }
     if (loginvalue == true) {
-        localStorage.setItem("isLogged", "true")
-        localStorage.setItem("adminid", log_email)
+        // localStorage.setItem("isLogged", "true")
+        // localStorage.setItem("adminid", log_email)
         alert("login sussessful")
         window.location.href = "resume.html"
     }
@@ -105,6 +108,7 @@ function login() {
     document.getElementById("log_email").value = "";
     document.getElementById("log_pass").value = "";
 }
+window.login = login;
 function logout() {
     localStorage.removeItem("isLogged")
     window.location = "index.html"
@@ -119,7 +123,7 @@ let resume = {
     projects: [],
     work_experience: []
 }
-resume.admin_id = admin;
+// resume.admin_id = admin;
 function generateresume(change, key, p_key) {
     if (p_key) {
         resume[p_key][key] = change.value
@@ -128,7 +132,7 @@ function generateresume(change, key, p_key) {
         resume[key] = change.value
     }
 }
-window.generateresume=generateresume;
+window.generateresume = generateresume;
 function addList(id, key, p_key) {
     let listEach = document.getElementById(id)
     if (p_key) {
@@ -141,7 +145,7 @@ function addList(id, key, p_key) {
     addskill(key, p_key)
 
 }
-window.addList=addList
+window.addList = addList
 function addskill(keyname, p_keyname) {
     let add = "";
     if (p_keyname) {
@@ -169,7 +173,7 @@ function addskill(keyname, p_keyname) {
         document.getElementById("additem").innerHTML = add;
     }
 }
-window.addskill=addskill
+window.addskill = addskill
 function adddelete(index, keychange, p_keychange) {
     let listskill = [];
     if (p_keychange) {
@@ -189,7 +193,7 @@ function adddelete(index, keychange, p_keychange) {
     }
     addskill(keychange, p_keychange)
 }
-window.adddelete=adddelete
+window.adddelete = adddelete
 function listSave(key, id, firstParam, secondParam, thirdParam, fourthParam, fifthParam) {
     let first = document.getElementById(firstParam)
     let second = document.getElementById(secondParam)
@@ -219,7 +223,7 @@ function listSave(key, id, firstParam, secondParam, thirdParam, fourthParam, fif
     fourth.value = "";
     eduadd(key, id, firstParam, secondParam, thirdParam, fourthParam, fifthParam)
 }
-window.listSave=listSave
+window.listSave = listSave
 function eduadd(keyvalue, idname, firstin, secondin, thirdin, fourthin, fifthin) {
     let edu = ""
     if (fifthin) {
@@ -274,7 +278,7 @@ function eduadd(keyvalue, idname, firstin, secondin, thirdin, fourthin, fifthin)
     document.getElementById(idname).innerHTML = edu;
 
 }
-window.eduadd=eduadd
+window.eduadd = eduadd
 function deleteedu(index, edu, id, first, second, third, fourth, fifth) {
     console.log(resume)
     let eduList = [];
@@ -287,49 +291,70 @@ function deleteedu(index, edu, id, first, second, third, fourth, fifth) {
 
     eduadd(edu, id, first, second, third, fourth, fifth)
 }
-window.deleteedu=deleteedu
+window.deleteedu = deleteedu
 // if (!localStorage.getItem("resume_list")) {
 //     localStorage.setItem("resume_list", JSON.stringify([]))
 // }
 // let user_resume = JSON.parse(localStorage.getItem("resume_list"))
 async function summit() {
-    await addDoc(collection(db, "resume_list"),(resume))
+    await addDoc(collection(db, "resume_list"), resume)
     // user_resume.push(resume)
     window.location.href = "list.html"
     display()
 }
-window.summit=summit
-let userlist_resume = JSON.parse(localStorage.getItem("resume_list"));
+window.summit = summit
+// let userlist_resume = JSON.parse(localStorage.getItem("resume_list"));
+let getResume = []
 function display() {
-    let diplayadd = ""
-    for (let each in userlist_resume) {
-        if (userlist_resume[each].admin_id == admin) {
+    // let displayadd="";
+    getDocs(query(collection(db, "resume_list"))).then(doc => {
+        doc.forEach((e, i, arr) => {
+            getResume.push(e.data())
+
+            //  displayadd = displayadd + `<tr>
+            //     <td>${getresume.name}</td>
+            //     <td>${getresume.email}</td>
+            //     <td>${getresume.Contact_no}</td>
+            //     <td><button onclick="deleteDisplay(${[i]})">Delete</button></td>
+            //     <td><a href="view.html?index=${i}"><button>View</button></a></td>
+            // </tr>`     
+            //  getResumedetails.push(e.data())
+            // console.log(getresume)
+
+        })
+        // document.getElementById("displaylist").innerHTML = displayadd;
+        console.log(getResume)
+        let diplayadd = ""
+        for (let each in getResume) {
             diplayadd = diplayadd + `<tr>
-                <td>${userlist_resume[each].name}</td>
-                <td>${userlist_resume[each].email}</td>
-                <td>${userlist_resume[each].Contact_no}</td>
+                <td>${getResume[each].name}</td>
+                <td>${getResume[each].email}</td>
+                <td>${getResume[each].Contact_no}</td>
                 <td><button onclick="deleteDisplay(${each})">Delete</button></td>
                 <td><a href="view.html?index=${each}"><button>View</button></a></td>
             </tr>`
         }
-    }
-    console.log(diplayadd)
-    document.getElementById("displaylist").innerHTML = diplayadd;
+        document.getElementById("displaylist").innerHTML = diplayadd;
+    })
 }
+window.display = display
 function deleteDisplay(index) {
     let balList = [];
-    for (let n in userlist_resume) {
+    for (let n in getResume) {
         if (n != index) {
-            balList.push(userlist_resume[n])
+            balList.push(getResume[n])
         }
     }
-    userlist_resume = balList;
-    localStorage.setItem('resume_list', JSON.stringify(balList))
+    console.log(balList)
+    getResume = balList;
+    // localStorage.setItem('resume_list', JSON.stringify(balList))
     display()
 }
 let searchParams = new URLSearchParams(window.location.search);
 let indexParam = searchParams.get('index');
-let ls_data = JSON.parse(localStorage.getItem('resume_list'))
+
+// let ls_data = JSON.parse(localStorage.getItem('resume_list'))
+window.deleteDisplay = deleteDisplay;
 function view() {
     document.getElementById("re_name").innerHTML = ls_data[indexParam].name;
     document.getElementById("re_mobile").innerHTML = ls_data[indexParam].Contact_no;
