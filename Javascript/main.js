@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { addDoc, collection, getFirestore, getDocs, query } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
+import { addDoc, collection, getFirestore, getDocs, query, deleteDoc, doc,where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,94 +17,84 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-async function registernew() {
-    let reg_name = document.getElementById("reg_name").value;
-    let reg_email = document.getElementById("reg_email").value;
-    let reg_password = document.getElementById("reg_pass").value;
-
-    await addDoc(collection(db, "register_data"), {
-        email: reg_email,
-        name: reg_name,
-        password: reg_password
-    })
-}
-window.registernew = registernew
-let getRegisterData = []
+let getRegisterData=[]
 getDocs(query(collection(db, "register_data"))).then(doc => {
     doc.forEach((e, i) => {
         getRegisterData.push(e.data())
     })
 })
 console.log(getRegisterData)
-// function register(){
-//     let reg_name=document.getElementById("reg_name").value;
-//     let reg_email=document.getElementById("reg_email").value;
-//     let reg_password=document.getElementById("reg_pass").value;
-//     if(reg_password.length<5){
-//         document.getElementById("reg_pass").style.borderColor="red";
-//         let b=`<p>${"Password must be 6 characters"}</p>`
-//         document.getElementById("wrong").innerHTML=b;
-//     }
-//     else if(reg_email!="" && reg_password!=""){
-//         document.getElementById("reg_pass").style.borderColor=''
-//         document.getElementById("wrong").innerHTML=''
-//         if(user_details==""){
-//             let user_list_obj={
-//                 name:reg_name,
-//                 email:reg_email,
-//                 password:reg_password
-//             }
-//             user_details.push(user_list_obj)
-//             localStorage.setItem("users",JSON.stringify(user_details))
-//             window.location.href='index.html'
-//         }
-//         else{
-//             let reg_value=false
-//             for(let n in user_details){
-//                 if(reg_email==user_details[n].email){
-//                     reg_value=true;
-//                 } 
-//              }
-//              if(reg_value==true){
-//                 alert("You're already registered please login")
-//              } 
-//             else{
-//                 let user_list_obj={
-//                     name:reg_name,
-//                     email:reg_email,
-//                     password:reg_password
-//                 }
-//                 user_details.push(user_list_obj)
-//                 localStorage.setItem("users",JSON.stringify(user_details))
-//                 alert("registration successfull")
-//                 window.location.href='index.html'
-//             }    
-//         }     
-//     }      
-//     document.getElementById("reg_name").value="";
-//     document.getElementById("reg_email").value="";
-//     document.getElementById("reg_pass").value=""; 
-// }
+async function registernew() {
+    let reg_name = document.getElementById("reg_name").value;
+    let reg_email = document.getElementById("reg_email").value;
+    let reg_password = document.getElementById("reg_pass").value;
+    if (reg_password.length < 5) {
+        document.getElementById("reg_pass").style.borderColor = "red";
+        let b = `<p>${"Password must be 6 characters"}</p>`
+        document.getElementById("wrong").innerHTML = b;
+    }
+    else if (reg_email != "" && reg_password != "") {
+        document.getElementById("reg_pass").style.borderColor = ''
+        document.getElementById("wrong").innerHTML = ''
+        if(getRegisterData==""){
+            await addDoc(collection(db, "register_data"), {
+                email: reg_email,
+                name: reg_name,
+                password: reg_password
+            })
+            window.location.href = 'index.html'
+        }
+        else {
+            let reg_value = false
+                for(let n in getRegisterData){
+                    if(reg_email==getRegisterData[n].email){
+                        console.log(getRegisterData[n].email)
+                        reg_value=true;
+                    } 
+                 }
+                if (reg_value==true) {
+                    alert("You're already registered please login")
+                }
+                else {
+                  await addDoc(collection(db, "register_data"), {
+                        email: reg_email,
+                        name: reg_name,
+                        password: reg_password
+                    })
+                    alert("registration successfull")
+                    window.location.href = 'index.html'
+                }
+        }
+    }
+    document.getElementById("reg_name").value = "";
+    document.getElementById("reg_email").value ="";
+    document.getElementById("reg_pass").value = "";
+}
 
-// let admin = localStorage.getItem("adminid")
-function login() {
+window.registernew = registernew
+let admin = localStorage.getItem("admin_id")
+
+async function login() {
     let log_email = document.getElementById("log_email").value;
     let log_password = document.getElementById("log_pass").value;
     let loginvalue = false;
-    for (let each in getRegisterData) {
-        if (log_email == getRegisterData[each].email && log_password == getRegisterData[each].password) {
-            loginvalue = true;
+    getDocs(query(collection(db, "register_data"))).then(doc => {
+        doc.forEach((e, i) => {
+            let getRegisterData = e.data()
+            if (log_email == getRegisterData.email && log_password == getRegisterData.password) {
+                loginvalue = true;
+            }
+        })
+        if (loginvalue == true){
+            localStorage.setItem("admin_id",log_email)
+            alert("login sussessful")
+            window.location.href = "resume.html"
+            
         }
-    }
-    if (loginvalue == true) {
-        // localStorage.setItem("isLogged", "true")
-        // localStorage.setItem("adminid", log_email)
-        alert("login sussessful")
-        window.location.href = "resume.html"
-    }
-    else if (loginvalue == false) {
-        alert("email and password is not valid")
-    }
+        else if (loginvalue == false){
+            alert("email and password is not valid")
+        }
+    })
     document.getElementById("log_email").value = "";
     document.getElementById("log_pass").value = "";
 }
@@ -123,7 +113,7 @@ let resume = {
     projects: [],
     work_experience: []
 }
-// resume.admin_id = admin;
+resume.adminId = admin;
 function generateresume(change, key, p_key) {
     if (p_key) {
         resume[p_key][key] = change.value
@@ -292,88 +282,93 @@ function deleteedu(index, edu, id, first, second, third, fourth, fifth) {
     eduadd(edu, id, first, second, third, fourth, fifth)
 }
 window.deleteedu = deleteedu
-// if (!localStorage.getItem("resume_list")) {
-//     localStorage.setItem("resume_list", JSON.stringify([]))
-// }
-// let user_resume = JSON.parse(localStorage.getItem("resume_list"))
 async function summit() {
-    await addDoc(collection(db, "resume_list"), resume)
-    // user_resume.push(resume)
-    window.location.href = "list.html"
-    display()
+    try {
+        let data = await addDoc(collection(db, "resume_list"), resume)
+        window.location.href = "list.html"
+        console.log(data)
+        display()
+
+    }
+    catch (err) {
+        console.log(err)
+    }
+
 }
 window.summit = summit
 // let userlist_resume = JSON.parse(localStorage.getItem("resume_list"));
-let getResume = []
+// let getResume = []
 function display() {
-    // let displayadd="";
-    getDocs(query(collection(db, "resume_list"))).then(doc => {
-        doc.forEach((e, i, arr) => {
-            getResume.push(e.data())
-
-            //  displayadd = displayadd + `<tr>
-            //     <td>${getresume.name}</td>
-            //     <td>${getresume.email}</td>
-            //     <td>${getresume.Contact_no}</td>
-            //     <td><button onclick="deleteDisplay(${[i]})">Delete</button></td>
-            //     <td><a href="view.html?index=${i}"><button>View</button></a></td>
-            // </tr>`     
+    let displayadd = "";
+    getDocs(query(collection(db, "resume_list"),where(admin,'==',resume.adminId))).then(doc => {
+        console.log(admin)
+        doc.forEach((e, i) => {
+            let getresume = e.data()
+            displayadd = displayadd + `<tr>
+                <td>${getresume.name}</td>
+                <td>${getresume.email}</td>
+                <td>${getresume.Contact_no}</td>
+                <td><button onclick="deleteDisplay('${e.id}')">Delete</button></td>
+                <td><a href="view.html?id=${e.id}"><button>View</button></a></td>
+            </tr>`
             //  getResumedetails.push(e.data())
-            // console.log(getresume)
 
         })
-        // document.getElementById("displaylist").innerHTML = displayadd;
-        console.log(getResume)
-        let diplayadd = ""
-        for (let each in getResume) {
-            diplayadd = diplayadd + `<tr>
-                <td>${getResume[each].name}</td>
-                <td>${getResume[each].email}</td>
-                <td>${getResume[each].Contact_no}</td>
-                <td><button onclick="deleteDisplay(${each})">Delete</button></td>
-                <td><a href="view.html?index=${each}"><button>View</button></a></td>
-            </tr>`
-        }
-        document.getElementById("displaylist").innerHTML = diplayadd;
+        document.getElementById("displaylist").innerHTML = displayadd;
+        // console.log(getResume)
+        // let diplayadd = ""
+        // for (let each in getResume) {
+
+        //     diplayadd = diplayadd + `<tr>
+        //         <td>${getResume[each].name}</td>
+        //         <td>${getResume[each].email}</td>
+        //         <td>${getResume[each].Contact_no}</td>
+        //         <td><button onclick="deleteDisplay(${getResume[each].id})">Delete</button></td>
+        //         <td><a href="view.html?index=${each}"><button>View</button></a></td>
+        //     </tr>`
+        // }
+        // document.getElementById("displaylist").innerHTML = diplayadd;
     })
+
 }
+
 window.display = display
-function deleteDisplay(index) {
-    let balList = [];
-    for (let n in getResume) {
-        if (n != index) {
-            balList.push(getResume[n])
-        }
-    }
-    console.log(balList)
-    getResume = balList;
-    // localStorage.setItem('resume_list', JSON.stringify(balList))
+function deleteDisplay(id) {
+    console.log(id)
+    deleteDoc(doc(db, "resume_list", id))
     display()
 }
 let searchParams = new URLSearchParams(window.location.search);
-let indexParam = searchParams.get('index');
+let indexParam = searchParams.get('id');
 
+console.log(indexParam)
 // let ls_data = JSON.parse(localStorage.getItem('resume_list'))
 window.deleteDisplay = deleteDisplay;
 function view() {
-    document.getElementById("re_name").innerHTML = ls_data[indexParam].name;
-    document.getElementById("re_mobile").innerHTML = ls_data[indexParam].Contact_no;
-    document.getElementById("re_email").innerHTML = ls_data[indexParam].email;
-    document.getElementById("re_address").innerHTML = ls_data[indexParam].address;
-    document.getElementById("re_objective").innerHTML = ls_data[indexParam].objective;
-    document.getElementById("per_father").innerHTML = ls_data[indexParam].personal_details.fathername
-    document.getElementById("per_age").innerHTML = ls_data[indexParam].personal_details.age;
-    document.getElementById("per_dob").innerHTML = ls_data[indexParam].personal_details.dob;
-    document.getElementById("per_marital").innerHTML = ls_data[indexParam].personal_details.marital_status;
-    document.getElementById("per_gender").innerHTML = ls_data[indexParam].personal_details.gender;
-    document.getElementById("per_nation").innerHTML = ls_data[indexParam].personal_details.nationality;
-    document.getElementById("per_lan").innerHTML = ls_data[indexParam].personal_details.languages_known;
-    eduview()
-    skillview()
-    projectview()
-    workview()
-
+    getDocs(query(collection(db, "resume_list"))).then(doc => {
+        doc.forEach((e, i) => {
+            let get_data = e.data()
+            console.log(indexParam, get_data)
+            document.getElementById("re_name").innerHTML = get_data.name;
+            // document.getElementById("re_mobile").innerHTML = get_data[indexParam].Contact_no;
+            // document.getElementById("re_email").innerHTML = ls_data[indexParam].email;
+            // document.getElementById("re_address").innerHTML = ls_data[indexParam].address;
+            // document.getElementById("re_objective").innerHTML = ls_data[indexParam].objective;
+            // document.getElementById("per_father").innerHTML = ls_data[indexParam].personal_details.fathername
+            // document.getElementById("per_age").innerHTML = ls_data[indexParam].personal_details.age;
+            // document.getElementById("per_dob").innerHTML = ls_data[indexParam].personal_details.dob;
+            // document.getElementById("per_marital").innerHTML = ls_data[indexParam].personal_details.marital_status;
+            // document.getElementById("per_gender").innerHTML = ls_data[indexParam].personal_details.gender;
+            // document.getElementById("per_nation").innerHTML = ls_data[indexParam].personal_details.nationality;
+            // document.getElementById("per_lan").innerHTML = ls_data[indexParam].personal_details.languages_known;
+            // eduview()
+            // skillview()
+            // projectview()
+            // workview()
+        })
+    })
 }
+window.view = view
 function eduview() {
     let education = ""
     for (let each in ls_data[indexParam].educational_qualification) {
