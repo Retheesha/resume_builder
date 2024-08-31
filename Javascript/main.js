@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { addDoc, collection, getFirestore, getDocs, query, deleteDoc, doc,where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
+import { addDoc, collection, getFirestore, getDocs, query, deleteDoc, doc,where,setDoc } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js"
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -87,6 +87,7 @@ async function login() {
         })
         if (loginvalue == true){
             localStorage.setItem("admin_id",log_email)
+            localStorage.setItem("isLogged","true")
             alert("login sussessful")
             window.location.href = "resume.html"
             
@@ -103,8 +104,8 @@ function logout() {
     localStorage.removeItem("isLogged")
     window.location = "index.html"
 }
+window.logout=logout;
 let resume = {
-
     personal_details: {
         languages_known: []
     },
@@ -282,42 +283,40 @@ function deleteedu(index, edu, id, first, second, third, fourth, fifth) {
     eduadd(edu, id, first, second, third, fourth, fifth)
 }
 window.deleteedu = deleteedu
+// let coll_id=localStorage.getItem('collectionId')
 async function summit() {
-    try {
-        let data = await addDoc(collection(db, "resume_list"), resume)
+    // const collectionRef = collection(db,"resume_list")
+    let docRef=db.collection("resume_list").document();
+    // await addDoc(collection(db, "resume_list"), {resume,Id:})
+    // await setDoc(doc(collectionRef, id), resume).then(() => id)
+        let resume_data=resume_list(id=docRef.id,resume)
         window.location.href = "list.html"
-        console.log(data)
         display()
-
-    }
-    catch (err) {
-        console.log(err)
-    }
-
+        // localStorage.setItem('collectionId',resume_data.id)
 }
+// resume.collectionId=coll_id
 window.summit = summit
 // let userlist_resume = JSON.parse(localStorage.getItem("resume_list"));
 // let getResume = []
 function display() {
     let displayadd = "";
-    getDocs(query(collection(db, "resume_list"),where(admin,'==',resume.adminId))).then(doc => {
-        console.log(admin)
-        doc.forEach((e, i) => {
+    getDocs(query(collection(db, "resume_list"),where('adminId','==',admin))).then(doc => {
+        doc.forEach((e) => {
             let getresume = e.data()
-            displayadd = displayadd + `<tr>
+            displayadd = displayadd +` <tr>
                 <td>${getresume.name}</td>
                 <td>${getresume.email}</td>
                 <td>${getresume.Contact_no}</td>
                 <td><button onclick="deleteDisplay('${e.id}')">Delete</button></td>
                 <td><a href="view.html?id=${e.id}"><button>View</button></a></td>
+                <td><a href="edit.html"><button>Edit</button></a></td>
             </tr>`
             //  getResumedetails.push(e.data())
-
         })
         document.getElementById("displaylist").innerHTML = displayadd;
         // console.log(getResume)
         // let diplayadd = ""
-        // for (let each in getResume) {
+        // for (let each in getResume){
 
         //     diplayadd = diplayadd + `<tr>
         //         <td>${getResume[each].name}</td>
@@ -334,37 +333,39 @@ function display() {
 
 window.display = display
 function deleteDisplay(id) {
-    console.log(id)
     deleteDoc(doc(db, "resume_list", id))
     display()
 }
 let searchParams = new URLSearchParams(window.location.search);
 let indexParam = searchParams.get('id');
-
 console.log(indexParam)
 // let ls_data = JSON.parse(localStorage.getItem('resume_list'))
 window.deleteDisplay = deleteDisplay;
-function view() {
+// const view = async() =>  {
+function view(){
+//    const test = await  getDocs(doc(db,"resume_list","KJnYB1KrmHUSONshPmfK"));
+//    console.log(test.data())
     getDocs(query(collection(db, "resume_list"))).then(doc => {
-        doc.forEach((e, i) => {
+        doc.forEach((e) => {
             let get_data = e.data()
             console.log(indexParam, get_data)
+            alert(indexParam)
             document.getElementById("re_name").innerHTML = get_data.name;
-            // document.getElementById("re_mobile").innerHTML = get_data[indexParam].Contact_no;
-            // document.getElementById("re_email").innerHTML = ls_data[indexParam].email;
-            // document.getElementById("re_address").innerHTML = ls_data[indexParam].address;
-            // document.getElementById("re_objective").innerHTML = ls_data[indexParam].objective;
-            // document.getElementById("per_father").innerHTML = ls_data[indexParam].personal_details.fathername
-            // document.getElementById("per_age").innerHTML = ls_data[indexParam].personal_details.age;
-            // document.getElementById("per_dob").innerHTML = ls_data[indexParam].personal_details.dob;
-            // document.getElementById("per_marital").innerHTML = ls_data[indexParam].personal_details.marital_status;
-            // document.getElementById("per_gender").innerHTML = ls_data[indexParam].personal_details.gender;
-            // document.getElementById("per_nation").innerHTML = ls_data[indexParam].personal_details.nationality;
-            // document.getElementById("per_lan").innerHTML = ls_data[indexParam].personal_details.languages_known;
-            // eduview()
-            // skillview()
-            // projectview()
-            // workview()
+    //         // document.getElementById("re_mobile").innerHTML = get_data[indexParam].Contact_no;
+    //         // document.getElementById("re_email").innerHTML = ls_data[indexParam].email;
+    //         // document.getElementById("re_address").innerHTML = ls_data[indexParam].address;
+    //         // document.getElementById("re_objective").innerHTML = ls_data[indexParam].objective;
+    //         // document.getElementById("per_father").innerHTML = ls_data[indexParam].personal_details.fathername
+    //         // document.getElementById("per_age").innerHTML = ls_data[indexParam].personal_details.age;
+    //         // document.getElementById("per_dob").innerHTML = ls_data[indexParam].personal_details.dob;
+    //         // document.getElementById("per_marital").innerHTML = ls_data[indexParam].personal_details.marital_status;
+    //         // document.getElementById("per_gender").innerHTML = ls_data[indexParam].personal_details.gender;
+    //         // document.getElementById("per_nation").innerHTML = ls_data[indexParam].personal_details.nationality;
+    //         // document.getElementById("per_lan").innerHTML = ls_data[indexParam].personal_details.languages_known;
+    //         // eduview()
+    //         // skillview()
+    //         // projectview()
+    //         // workview()
         })
     })
 }

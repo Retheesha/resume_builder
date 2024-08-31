@@ -23,6 +23,7 @@
                     <th>Contact No</th>
                     <th>Delete</th>
                     <th>View</th>
+                    <th>edit</th>
                 </tr>
             </thead>
             <tbody id="displaylist">
@@ -33,9 +34,9 @@
 <script src="Javascript/main.js" type="module"></script>
 <script type="module">
    display()
-    // let isLogged=localStorage.getItem("isLogged")
-    // if(!isLogged){
-    //     window.location="index.html"
-    // }
+    let isLogged=localStorage.getItem("isLogged")
+    if(!isLogged){
+        window.location="index.html"
+    }
 </script>
 </html>
